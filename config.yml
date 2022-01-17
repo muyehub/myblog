@@ -16,10 +16,10 @@ minify:
 
 params:
   env: production # to enable google analytics, opengraph, twitter-cards and schema.
-  title: ExampleSite
-  description: "ExampleSite description"
-  keywords: [Blog, Portfolio, PaperMod]
-  author: Me
+  title: Beoning
+  description: "我的个人博客"
+  keywords: [Blog, Golang, PersonalBlog, PaperMod]
+  author: Max
   # author: ["Me", "You"] # multiple authors
   images: ["<link or path of image for opengraph, twitter-cards>"]
   DateFormat: "January 2, 2006"
@@ -50,7 +50,7 @@ params:
 
   label:
     text: "Beoning"
-    icon: https://www.soundpill.cn/favicon.png
+    icon: https://s2.loli.net/2022/01/17/bnDIUk5RZhK2CgY.png
     iconHeight: 35
 
   # profile-mode
