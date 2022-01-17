@@ -1,0 +1,4 @@
+baseURL = 'https://www.soundpill.cn'
+languageCode = 'en-us'
+title = 'Beoning'
+theme = 'PaperMod'

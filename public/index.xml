@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Beoning</title>
+    <link>https://www.soundpill.cn/</link>
+    <description>Recent content on Beoning</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 02 Dec 2021 14:48:45 +0800</lastBuildDate><atom:link href="https://www.soundpill.cn/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>将视频切割为均等的时间长度</title>
+      <link>https://www.soundpill.cn/posts/2021-12-02-cut-video-avg/</link>
+      <pubDate>Thu, 02 Dec 2021 14:48:45 +0800</pubDate>
+      
+      <guid>https://www.soundpill.cn/posts/2021-12-02-cut-video-avg/</guid>
+      <description>前情提要 有时候在某些软件中将单次可发送的视频时长限制为 5 分钟或者 15 分钟, 总之就是一个固定的长度, 这样在我们发送超过时长的视频时会比较不方便.
+所以写一段程序来自动按照传入的时间来等分视频.
+当然这只是其中一个场景.
+利用 goroutine 和 FFmpeg 首先获取视频长度信息可以通过 ffprobe 命令来获取, 这个是 FFmpeg 下的一个工具包, 安装 FFmpeg 后就会有了.
+然后拿到视频总时长后根据传入的分钟数来分割视频, 这时候就需要用到 ffmpeg 命令了.
+最后启动 goroutine 来异步分割每一段视频, 最终完成.
+工具地址 https://github.com/muyehub/cut_video_avg</description>
+    </item>
+    
+    <item>
+      <title>golang 编程陷阱---摘自《go 专家编程》</title>
+      <link>https://www.soundpill.cn/posts/2021-11-02-golang-coding-trap/</link>
+      <pubDate>Tue, 02 Nov 2021 23:47:33 +0800</pubDate>
+      
+      <guid>https://www.soundpill.cn/posts/2021-11-02-golang-coding-trap/</guid>
+      <description>关于切片扩容 在使用 append 向 slice 中追加元素时，如果 slice 容量不足以存储新元素，则会把当前切片扩容并产生一个新的切片。如下：
+package main import &amp;#34;fmt&amp;#34; func main() { s := make([]int, 0) w := append(s, 1) t := append(s, 2) v := append(s, 3) fmt.Printf(&amp;#34;%p, %p , %p , %p, %p&amp;#34;, s, w, t, v) } // 0x116ce80, 0xc00001c198 , 0xc00001c1a0 , 0xc00001c1a8 append 会每次都生成一个新的切片，并且每次都会做扩容操作，元切片 s 并没有改变任何。
+所以，在操作中要将 append 的返回值接收，如果不接收编译器会报错，如果用 _ 忽略返回值，则需要考虑扩容的情况，避免滥用。
+空切片 向 slice 中 append 空值(nil)时也会增加 slice 的长度，这在有些情况下可能会导致严重的错误，并且不易察觉，书中举了一个 Kubernetes 项目中的例子。
+有一个错误收集器，用来将验证函数的一系列错误收集到一个 slice 中，检查 slice 的长度如果大于 0 时，说明有错误产生，则程序退出，如下：</description>
+    </item>
+    
+    <item>
+      <title>php-tips</title>
+      <link>https://www.soundpill.cn/posts/2021-08-16-php-tips/</link>
+      <pubDate>Mon, 16 Aug 2021 19:03:01 +0800</pubDate>
+      
+      <guid>https://www.soundpill.cn/posts/2021-08-16-php-tips/</guid>
+      <description>在 foreach 中不要使用 array_merge，不仅慢而且耗费内存，可以在 foreach 中对要合并的数组进行赋值，在 foreach 外部统一进行合并，具体性能差异可以参考这篇文章：不要在循环体中使用 array_merge()
+  在 foreach 中也不要使用 array_push，可以通过向数组中赋值的方式代替，比如：$students[] = $student[&amp;lsquo;id&amp;rsquo;]， 而不是 array_push($students, $student[&amp;lsquo;id&amp;rsquo;])，具体性能差异可以参考这篇文章：不要在循环体中使用 array_push()
+  针对一些查询较为复杂或者比较核心的逻辑里的 sql 查询，可以将 sql 语句写到注释中，这样看代码的时候不用再去拼接 sql，直接用注释中的 sql 拿来排查问题
+  如果使用 phpstorm 可以安装 php inspections 插件来进行代码的静态分析，可以帮助查找代码规范，语法漏洞，函数使用方式方面的错误。其他的一些代码质量工具可以配置使用 phpcs，phpmd，phpcs-fixer，psalm，phpstan 等。而且可以通过 phpstorm 的热键录制功能，将徽标键 + s 设置为 phpcs-fixer，format code 的快捷键，这样写完时可以通过快捷键格式化代码。
+  为避免在项目中将 dd，var_dump，exit，die 等函数提交到远程版本库中，可以在项目的 .git/hooks/pre-commit 中进行控制，加入下面的代码，每次提交时可以检测到。参考的这个：pre-commit
+  VAR=$(git diff --cached --diff-filter=ACMR | grep -wiE &amp;#34;var_dump|echo|exit|dd|die|console.log&amp;#34;) if [ !</description>
+    </item>
+    
+    <item>
+      <title>go-tips</title>
+      <link>https://www.soundpill.cn/posts/2021-08-16-go-tips/</link>
+      <pubDate>Mon, 16 Aug 2021 18:40:38 +0800</pubDate>
+      
+      <guid>https://www.soundpill.cn/posts/2021-08-16-go-tips/</guid>
+      <description>当把时间作为一个变量传递时，可能会导致的问题，比如：  waitTime := 30 wait := waitTime * time.Second 这样子是错误的，因为 waitTime 不是 time.Duration 类型，但如果直接写 30 * time.Second 就会成功 在不太了解的情况下，我手动把 waitTime 通过“诡异”的方式变成了 time.Duration 类型
+waitTime := 30 * time.Second wait := waitTime * time.Second 这种情况下 wait 的值就变成了 88 万小时，不是预想的结果，正确的写法如下：
+waitTime := 30 wait := time.Duration(waitTime) * time.Second  当 waitGroup 使用时要清楚的知道 Done 方法的执行次数，如果是类似递归的结构，执行了多次 Done 方法，则会导致waitGroup 的计数器溢出，导致边界错误，如下：  这段代码运行时会导致 panic: sync: negative WaitGroup counter，所以我们在实际编写代码的过程中，如果有类似的情况，可以通过将有限次数的递归转换为迭代的形式来规避这种问题。总之，你需要明确的知道 Done 方法执行了几次。
+  在 goroutine 使用的过程中我们是无法拿到当前 goroutine 的报错信息的，从而可能需要额外建立一个通道，将报错信息传递到某一个 channel 中，然后监听 channel 来进行错误处理。官方提供了一项实验功能，可以用来解决这个问题。官方包在这里：golang.</description>
+    </item>
+    
+    <item>
+      <title>一道go面试题</title>
+      <link>https://www.soundpill.cn/posts/2021-01-18-go-question/</link>
+      <pubDate>Mon, 18 Jan 2021 21:50:43 +0800</pubDate>
+      
+      <guid>https://www.soundpill.cn/posts/2021-01-18-go-question/</guid>
+      <description>一道 Go 面试题 请问下面这两段代码分别输出什么? 直接说结果, 如果你的电脑不是奔腾, 赛扬什么的处理器, 那结果基本是固定的, 就是啥也没有. 因为在 goroutine 反应过来之前, 程序已经执行完了, 还没来得及输出就结束了.
+要么, 你就让时间延迟几秒再结束, time.Sleep(10 * time.Second), 要么就像下面这样使用 WaitGroup 来等待 goroutine 结束 这不是问题的重点, 重点是这两种使用匿名函数的方式, 输出会有什么不一样吗?
+首先说第一种, 没有传参的情况下, 匿名函数中是使用的引用地址来操作的, 这时候 i 可能已经加到 10 了, 所以打印出来可能会是 10 个 10, 或者中间夹杂几个其他数字什么的. (而且这时候 goroutine 总是在 i++ 之后执行, 所以是从 1 - 10, 不是 0 - 9)
+第二种情况, 显而易见就是乱序的了, 会把 0 - 9 挨个输出, 但是是乱序的</description>
+    </item>
+    
+    <item>
+      <title>i&#43;&#43;是原子操作吗?</title>
+      <link>https://www.soundpill.cn/posts/2021-01-17-iplusplus/</link>
+      <pubDate>Sun, 17 Jan 2021 09:47:29 +0800</pubDate>
+      
+      <guid>https://www.soundpill.cn/posts/2021-01-17-iplusplus/</guid>
+      <description>i++ 是原子操作吗? 不是, i++ 要完成的操作要先读取变量 i 的值, 对这个值加 1, 再把结果保存到 i 中. 所以不是原子操作.
+我们来看下面的代码
+这段代码是启动 10 个线程, 每个线程对 count 执行 10 万次自增操作, 直观上来看最后 count 的结果是 100 万, 但因为自增操作不是原子性的, 所以最终的结果每次都会不一样, 会有协程做重复操作. 那应该怎么解决这个问题呢? 并发资源的读取问题最直接的解决方法就是加锁. 改良后如下:</description>
+    </item>
+    
+    <item>
+      <title>Gerrit概念说明及使用</title>
+      <link>https://www.soundpill.cn/posts/2020-09-23-gerrit-desc/</link>
+      <pubDate>Wed, 23 Sep 2020 18:35:52 +0800</pubDate>
+      
+      <guid>https://www.soundpill.cn/posts/2020-09-23-gerrit-desc/</guid>
+      <description>Gerrit介绍 Gerrit简介 Gerrit, 一种开放源代码的代码审查软件, 使用网页界面. 利用网页浏览器, 同一个团队的软件开发者, 可以相互审阅彼此修改后的代码, 决定是否能够提交, 回退或是继续修改. 它使用版本控制系统Git作为底层.
+它分支自Rietveld, 作者为Google公司的Shawn Pearce, 原先是为了管理Android项目而产生. 这个软件的名称, 来自于荷兰家具设计师赫里特·里特费尔德(Gerrit Rietveld).
+因为对访问控制表(ACL)相关的修正, 没有被集成进Rietveld, 之后Gerrit就由Rietveld分支出来, 形成独立软件项目.
+最早它是由Python写成, 在第二版后, 改成用Java与SQL. 使用Google Web Toolkit来产生前端的JavaScript.
+为什么需要Gerrit 首先, 代码审查可以帮助程序员了解系统功能, 从整体掌控代码质量, 其次, 通过代码审核可以及时止损, 构建更加健壮的系统代码.
+代码审核的建议(来自程序员客栈)   对事不对人, 大家都是同事, 在一个团队工作和气最重要. 不要在Code Review中说&amp;quot;你写的什么垃圾&amp;quot;这种话, 你可以说&amp;quot;这个变量名不是很好理解, 咱们换成xxx是不是更好&amp;quot;
+  每个Review至少给一条正面评价. Gerrit中有对代码点赞的功能, 可以时不时的使用一下.
+  保证发布的代码和评审意见的可读性.
+  用工具进行基础问题的自动化检查. 用Tab还是空格, 用两个空格还是四个空格, 缩进风格是使用K&amp;amp;R还是Allman. 这些问题可以使用php code sniffer解决, 团队应该把精力放在代码规范, 代码性能优化等地方.
+  全员参加Code Review, 并设定各部分负责人.
+  每个代码PR(Pull Request)内容一定要少.</description>
+    </item>
+    
+    <item>
+      <title>为什么没有使用索引?</title>
+      <link>https://www.soundpill.cn/posts/2020-09-23-why-index-unuse/</link>
+      <pubDate>Wed, 23 Sep 2020 11:41:43 +0800</pubDate>
+      
+      <guid>https://www.soundpill.cn/posts/2020-09-23-why-index-unuse/</guid>
+      <description>为什么没有用索引? 已知表 a 数据总量是 40w, 根据时间范围过滤出最近 7 天的数据, 语句如下:
+explain SELECT `question_id`, `student_id`, `teacher_id`, `question_type`, `question_step`, `question_no`, `level`, `class_id`, `lesson_id`, `teacher_get_at`, `teacher_set_at`, `status`, `teacher_from`, `wrong_reason_id`, `created_at`, `submit_time` FROM `answer_records` WHERE `updated_at` BETWEEN &#39;2020-07-14+00:00:00&#39; AND &#39;2020-07-21+00:00:00&#39; ORDER BY `created_at` DESC; 从 explain 返回的数据来看, 这条语句并没有使用到索引, 而且 mysql 进行了全表的扫描, 这个原因就是我们要查询的数据太多了.
+因为 innodb 引擎会在检索索引后进行回表的操作, mysql 觉得你查询的数据这么多, 我一个个回表的这点时间都可以把全表扫一次了, 我就没必要用索引再去回表了, 所以就会导致这个索引没有用到.
+那我们就想用索引, 应该怎么办呢?
+FROM `answer_records` FORCE INDEX(rqx) 在业务层面的话, 如果时间范围比较大, 可以分批次查询, 这样就会快一点, 如果是频繁需要此类操作的话, 还是建议将时间戳提早设计进表结构里, 通过 int 类型的时间戳进行范围查找和排序会事半功倍</description>
+    </item>
+    
+    <item>
+      <title>在图片上添加文字或图片</title>
+      <link>https://www.soundpill.cn/posts/2020-01-10-draw-someting-on-picture/</link>
+      <pubDate>Fri, 10 Jan 2020 15:43:41 +0800</pubDate>
+      
+      <guid>https://www.soundpill.cn/posts/2020-01-10-draw-someting-on-picture/</guid>
+      <description>intervention/image 这是一个第三方扩展, 用来处理图片的, 功能特别强大, 可以 cover 我们这篇文章提到的需求
+安装文档: http://image.intervention.io/getting_started/installation
+我们首先在项目中引入这个包:
+$ composer require intervention/image 其次, laravel 中需要发布配置文件:
+php artisan vendor:publish --provider=&amp;quot;Intervention\Image\ImageServiceProviderLaravel5&amp;quot; lumen 中需要修改 bootstrap.php, 在当中手动注册
+$app-&amp;gt;register(\Intervention\Image\ImageServiceProviderLumen::class); 该扩展默认使用的是 GD 库, 如果你想用 Imagick 扩展需要修改文件, config/image.php
+&amp;lt;?php return [ &#39;driver&#39; =&amp;gt; &#39;imagick&#39; ]; 如果你不想要每次 use 都使用全路径, 可以按照官方所述将 Image 关键字写入 alias 中
+ Laravel: config/app.php  $providers: Intervention\Image\ImageServiceProvider::class $aliases: &#39;Image&#39; =&amp;gt; Intervention\Image\Facades\Image::class  Lumen: bootstrap/app.php  $app-&amp;gt;withAliases(array(&#39;Intervention\Image\Facades\Image&#39; =&amp;gt; &#39;Image&#39;)); 具体使用 use Image; public function deal() { $image = Image::make(public_path() .</description>
+    </item>
+    
+    <item>
+      <title>比较两个字符串是否相等</title>
+      <link>https://www.soundpill.cn/posts/2020-01-10-compare-two-string-equal/</link>
+      <pubDate>Fri, 10 Jan 2020 15:34:56 +0800</pubDate>
+      
+      <guid>https://www.soundpill.cn/posts/2020-01-10-compare-two-string-equal/</guid>
+      <description>有时候, 当用户传入一个字符串时, 你可能会需要拿着这个字符串和最终结果相对比, 如果我们使用 == 号来比较两个字符串, 可能会产生时序攻击.
+&#39;abcdef&#39; == $req-&amp;gt;code 也就是说, == 号在判断两个字符串相等时, 会一位一位的判断, 如果遇到哪一位不一样, 就返回错误, 这样根据服务器运算速度, 就可以一位一位的猜出最终的结果.
+php 官方提供了避免时序攻击的字符串比较函数, 就是 hash_equals 无论两个字符串是否相等, 本函数的时间消耗是恒定的.
+文档如下: https://www.php.net/manual/zh/function.hash-equals.php</description>
+    </item>
+    
+    <item>
+      <title>Homestead完整的切换php版本</title>
+      <link>https://www.soundpill.cn/posts/2020-01-10-homestead-version-switch/</link>
+      <pubDate>Fri, 10 Jan 2020 15:14:46 +0800</pubDate>
+      
+      <guid>https://www.soundpill.cn/posts/2020-01-10-homestead-version-switch/</guid>
+      <description>相信大多数人搜到的都是这篇文章 https://learnku.com/articles/16881
+文章中说, 使用 homestead 自带的工具 update-alternatives 进行切换就可以了, 但是我在使用后 php 的版本是切换了, 但是 pecl 安装扩展的时候安装的还是20170817目录, 这是 php7.2 的扩展包默认目录, 使用 php-config 看的时候也是 php7.2
+如何把phpize, pecl, php-config 都切换为 php7.1 呢? 请看下面
+sudo update-alternatives --set php /usr/bin/php7.1 sudo update-alternatives --set phar /usr/bin/phar7.1 sudo update-alternatives --set phar.phar /usr/bin/phar.phar7.1 sudo update-alternatives --set phpize /usr/bin/phpize7.1 sudo update-alternatives --set php-config /usr/bin/php-config7.1 如果你在切换之前装了错误的扩展包到其他版本的目录下, 这样切换完之后卸载重新装, 就 ok 了</description>
+    </item>
+    
+    <item>
+      <title>mojave下使用pyenv安装python3出错的问题</title>
+      <link>https://www.soundpill.cn/posts/2019-02-26-mojave%E4%B8%8B%E4%BD%BF%E7%94%A8pyenv%E5%AE%89%E8%A3%85python3%E5%87%BA%E9%94%99%E7%9A%84%E9%97%AE%E9%A2%98/</link>
+      <pubDate>Tue, 26 Feb 2019 15:33:39 +0800</pubDate>
+      
+      <guid>https://www.soundpill.cn/posts/2019-02-26-mojave%E4%B8%8B%E4%BD%BF%E7%94%A8pyenv%E5%AE%89%E8%A3%85python3%E5%87%BA%E9%94%99%E7%9A%84%E9%97%AE%E9%A2%98/</guid>
+      <description>使用pyenv安装python3时出现如下报错 按照提示来看,好像是在提示我没有安装zlib库,但是我已经装了,没办法,google一下吧. (如果你因为没有安装zlib库而产生这个问题, 那就好办了, 直接brew install zlib)
+google搜索到的解决方案大都是要安装xcode命令行工具 xcode-select --install 这个我也安装了, 不安装的话啥也干不了啊
+最后解决方案 查看一下xcode-select -v的版本 这个版本的xcode-select 在默认情况下不包含Mojave SDK的头文件的,需要手动安装,mojave采用了新的SDK,关于新SDK的解释,官方的文档在这里 https://developer.apple.com/macos/whats-new/
+接下来,我手动安装了新的SDK头文件,解决完毕
+sudo installer -pkg /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg -target / </description>
+    </item>
+    
+    <item>
+      <title>redis中的SDS数据结构</title>
+      <link>https://www.soundpill.cn/posts/2019-02-26-redis%E4%B8%AD%E7%9A%84sds%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</link>
+      <pubDate>Tue, 26 Feb 2019 15:31:32 +0800</pubDate>
+      
+      <guid>https://www.soundpill.cn/posts/2019-02-26-redis%E4%B8%AD%E7%9A%84sds%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</guid>
+      <description>SDS(Simple Dynamic String)简单动态字符串 在Redis中可修改的字符串值都是采用的SDS数据结构, 而不可修改的都采用了C字符串
+SDS的结构 有三个基本变量
+ free 纪录buf数组中未使用字节的数量 len 纪录buf数组中已使用字节的数量, 等于SDS所保存字符串的长度 buf 字节数组, 用于保存字符串(二进制)  为什么采用SDS SDS是基于C字符串结构的缺点优化后的产物, 因为采用C字符串的方式会有以下一些问题：
+ 获取字符串长度需要遍历字符串获取, 将需要O(N)的时间复杂度 C字符串会有缓冲区溢出的问题 一旦修改字符串操作发生就会重新分配内存, 修改N次就分配N次 所以, 基于以上问题SDS结构的优点也显而易见了, 如下: 因为结构体中标记了字符串长度, 所以获取长度的时间复杂度变成了O(1) SDS的API中对内存分配的机制杜绝了缓冲区溢出的问题 同样, API中的操作也减少了修改字符串长度时所需的内存重分配次数 二进制安全 兼容部分C字符串函数  内存分配机制  空间预分配 在字符串增长操作中有两种情况来预分配空间 第一种是修改后的长度(len的值)小于1MB的情况下, free的值会和len的值相同, 来做到减少内存分配次数, 预分配以后可能会使用到的空间 第二种是修改后的长度大于1MB的情况下, free的值会多修改为1MB, 也就是在原来基础上多出1MB的未使用空间 惰性空间释放 在字符串缩短操作的时候, 不会将释放的空间马上回收, 而是会写入到free中, 将缩短的长度标记为未使用空间为将来可能会使用的字符串预留位置。SDS中也有相应的API, 可以在需要时真正释放这部分空间。  </description>
+    </item>
+    
+    <item>
+      <title>rebase和merge的区别</title>
+      <link>https://www.soundpill.cn/posts/2019-02-24-rebase%E5%92%8Cmerge%E7%9A%84%E5%8C%BA%E5%88%AB/</link>
+      <pubDate>Sun, 24 Feb 2019 15:36:37 +0800</pubDate>
+      
+      <guid>https://www.soundpill.cn/posts/2019-02-24-rebase%E5%92%8Cmerge%E7%9A%84%E5%8C%BA%E5%88%AB/</guid>
+      <description>变基 找了一大圈, 还是官方的解释最好, 贴出来自己看吧, &amp;ldquo;变基&amp;quot;这个名字起的很好, 文档中的&amp;quot;重新播放&amp;quot;的解释也相当生动
+https://git-scm.com/book/zh/v2/Git-分支-变基</description>
+    </item>
+    
+    <item>
+      <title>cgi, fastcgi, php-cgi, php-fpm的关系</title>
+      <link>https://www.soundpill.cn/posts/2019-02-21-cgi-fastcgi-php-cgi-php-fpm/</link>
+      <pubDate>Thu, 21 Feb 2019 15:33:39 +0800</pubDate>
+      
+      <guid>https://www.soundpill.cn/posts/2019-02-21-cgi-fastcgi-php-cgi-php-fpm/</guid>
+      <description>cgi 通用网关接口, Common Gateway Interface, CGI是Web服务器运行时外部程序的规范, 按CGI编写的程序可以扩展服务器功能. 所以, 广义上的cgi是一种接口标准, 不是字面意义上的接口. 狭义上, cgi就是cgi程序, 运行在服务器上, 提供同客户端HTML页面的接口. 绝大多数的cgi程序被用来解释处理来自表单的输入信息, 并在服务器产生相应的处理, 或将相应的信息反馈给浏览器, cgi程序使网页具有交互功能. cgi程序处理步骤:
+ 通过Internet把用户请求送到web服务器. web服务器接受用户请求并交给CGI程序处理. CGI程序把处理结果传送给web服务器. web服务器把结果送回到用户.  fastcgi 快速通用网关接口, Fast Common Gateway Interface, CGI有很多缺点, 每接收一个请求就要fork一个进程处理, 只能接收一个请求作出一个响应, 请求结束后该进程就会结束. 而fastcgi会事先启动起来, 作为一个cgi的管理服务器存在, 使用进程/线程池来处理一连串的请求. fastcgi程序处理步骤:
+ web服务器启动时载入fastcgi进程管理器 fastcgi自身初始化, 启动多个cgi解释器进程并等待来自web server的请求 当请求来到web服务器时, web服务器通过socket请求fastcgi进程管理器, fastcgi进程管理器选择并连接到一个cgi解释器, web服务器将cgi环境变量和标准输入发送到fastcgi子进程 fastcgi子进程处理请求完成后将标准输出和错误从同一连接返回给web服务器, 当fastcgi子进程结束后请求便结束.fastcgi子进程接着等待处理来自fastcgi进程管理器的下一个连接.  php-cgi php实现的cgi程序
+php-fpm php实现的fastcgi程序</description>
+    </item>
+    
+    <item>
+      <title>推荐两个实用好玩的网站</title>
+      <link>https://www.soundpill.cn/posts/2019-02-21-%E6%8E%A8%E8%8D%90%E4%B8%A4%E4%B8%AA%E5%AE%9E%E7%94%A8%E5%A5%BD%E7%8E%A9%E7%9A%84%E7%BD%91%E7%AB%99/</link>
+      <pubDate>Thu, 21 Feb 2019 10:23:37 +0800</pubDate>
+      
+      <guid>https://www.soundpill.cn/posts/2019-02-21-%E6%8E%A8%E8%8D%90%E4%B8%A4%E4%B8%AA%E5%AE%9E%E7%94%A8%E5%A5%BD%E7%8E%A9%E7%9A%84%E7%BD%91%E7%AB%99/</guid>
+      <description>在线绘图工具 有流程图，有类图，应有尽有，样式还很好看 https://www.draw.io/
+AI在线抠图工具 不说了，自己看吧 https://www.gaoding.com/koutu</description>
+    </item>
+    
+  </channel>
+</rss>

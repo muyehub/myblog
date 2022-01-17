@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>redis中的SDS数据结构 | Beoning</title>
+<meta name="keywords" content="" />
+<meta name="description" content="SDS(Simple Dynamic String)简单动态字符串 在Redis中可修改的字符串值都是采用的SDS数据结构, 而不可修改的都采用了C字符串
+SDS的结构 有三个基本变量
+ free 纪录buf数组中未使用字节的数量 len 纪录buf数组中已使用字节的数量, 等于SDS所保存字符串的长度 buf 字节数组, 用于保存字符串(二进制)  为什么采用SDS SDS是基于C字符串结构的缺点优化后的产物, 因为采用C字符串的方式会有以下一些问题：
+ 获取字符串长度需要遍历字符串获取, 将需要O(N)的时间复杂度 C字符串会有缓冲区溢出的问题 一旦修改字符串操作发生就会重新分配内存, 修改N次就分配N次 所以, 基于以上问题SDS结构的优点也显而易见了, 如下: 因为结构体中标记了字符串长度, 所以获取长度的时间复杂度变成了O(1) SDS的API中对内存分配的机制杜绝了缓冲区溢出的问题 同样, API中的操作也减少了修改字符串长度时所需的内存重分配次数 二进制安全 兼容部分C字符串函数  内存分配机制  空间预分配 在字符串增长操作中有两种情况来预分配空间 第一种是修改后的长度(len的值)小于1MB的情况下, free的值会和len的值相同, 来做到减少内存分配次数, 预分配以后可能会使用到的空间 第二种是修改后的长度大于1MB的情况下, free的值会多修改为1MB, 也就是在原来基础上多出1MB的未使用空间 惰性空间释放 在字符串缩短操作的时候, 不会将释放的空间马上回收, 而是会写入到free中, 将缩短的长度标记为未使用空间为将来可能会使用的字符串预留位置。SDS中也有相应的API, 可以在需要时真正释放这部分空间。  ">
+<meta name="author" content="max">
+<link rel="canonical" href="https://www.soundpill.cn/posts/2019-02-26-redis%E4%B8%AD%E7%9A%84sds%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.c88963fe2d79462000fd0fb1b3737783c32855d340583e4523343f8735c787f0.css" integrity="sha256-yIlj/i15RiAA/Q&#43;xs3N3g8MoVdNAWD5FIzQ/hzXHh/A=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.7680afc38aa6b15ddf158a4f3780b7b1f7dde7e91d26f073e6229bb7a0793c92.js" integrity="sha256-doCvw4qmsV3fFYpPN4C3sffd5&#43;kdJvBz5iKbt6B5PJI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://www.soundpill.cn/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://www.soundpill.cn/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://www.soundpill.cn/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://www.soundpill.cn/apple-touch-icon.png">
+<link rel="mask-icon" href="https://www.soundpill.cn/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<meta name="generator" content="Hugo 0.92.0" />
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="redis中的SDS数据结构" />
+<meta property="og:description" content="SDS(Simple Dynamic String)简单动态字符串 在Redis中可修改的字符串值都是采用的SDS数据结构, 而不可修改的都采用了C字符串
+SDS的结构 有三个基本变量
+ free 纪录buf数组中未使用字节的数量 len 纪录buf数组中已使用字节的数量, 等于SDS所保存字符串的长度 buf 字节数组, 用于保存字符串(二进制)  为什么采用SDS SDS是基于C字符串结构的缺点优化后的产物, 因为采用C字符串的方式会有以下一些问题：
+ 获取字符串长度需要遍历字符串获取, 将需要O(N)的时间复杂度 C字符串会有缓冲区溢出的问题 一旦修改字符串操作发生就会重新分配内存, 修改N次就分配N次 所以, 基于以上问题SDS结构的优点也显而易见了, 如下: 因为结构体中标记了字符串长度, 所以获取长度的时间复杂度变成了O(1) SDS的API中对内存分配的机制杜绝了缓冲区溢出的问题 同样, API中的操作也减少了修改字符串长度时所需的内存重分配次数 二进制安全 兼容部分C字符串函数  内存分配机制  空间预分配 在字符串增长操作中有两种情况来预分配空间 第一种是修改后的长度(len的值)小于1MB的情况下, free的值会和len的值相同, 来做到减少内存分配次数, 预分配以后可能会使用到的空间 第二种是修改后的长度大于1MB的情况下, free的值会多修改为1MB, 也就是在原来基础上多出1MB的未使用空间 惰性空间释放 在字符串缩短操作的时候, 不会将释放的空间马上回收, 而是会写入到free中, 将缩短的长度标记为未使用空间为将来可能会使用的字符串预留位置。SDS中也有相应的API, 可以在需要时真正释放这部分空间。  " />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.soundpill.cn/posts/2019-02-26-redis%E4%B8%AD%E7%9A%84sds%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2019-02-26T15:31:32&#43;08:00" />
+<meta property="article:modified_time" content="2019-02-26T15:31:32&#43;08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="redis中的SDS数据结构"/>
+<meta name="twitter:description" content="SDS(Simple Dynamic String)简单动态字符串 在Redis中可修改的字符串值都是采用的SDS数据结构, 而不可修改的都采用了C字符串
+SDS的结构 有三个基本变量
+ free 纪录buf数组中未使用字节的数量 len 纪录buf数组中已使用字节的数量, 等于SDS所保存字符串的长度 buf 字节数组, 用于保存字符串(二进制)  为什么采用SDS SDS是基于C字符串结构的缺点优化后的产物, 因为采用C字符串的方式会有以下一些问题：
+ 获取字符串长度需要遍历字符串获取, 将需要O(N)的时间复杂度 C字符串会有缓冲区溢出的问题 一旦修改字符串操作发生就会重新分配内存, 修改N次就分配N次 所以, 基于以上问题SDS结构的优点也显而易见了, 如下: 因为结构体中标记了字符串长度, 所以获取长度的时间复杂度变成了O(1) SDS的API中对内存分配的机制杜绝了缓冲区溢出的问题 同样, API中的操作也减少了修改字符串长度时所需的内存重分配次数 二进制安全 兼容部分C字符串函数  内存分配机制  空间预分配 在字符串增长操作中有两种情况来预分配空间 第一种是修改后的长度(len的值)小于1MB的情况下, free的值会和len的值相同, 来做到减少内存分配次数, 预分配以后可能会使用到的空间 第二种是修改后的长度大于1MB的情况下, free的值会多修改为1MB, 也就是在原来基础上多出1MB的未使用空间 惰性空间释放 在字符串缩短操作的时候, 不会将释放的空间马上回收, 而是会写入到free中, 将缩短的长度标记为未使用空间为将来可能会使用的字符串预留位置。SDS中也有相应的API, 可以在需要时真正释放这部分空间。  "/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://www.soundpill.cn/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "redis中的SDS数据结构",
+      "item": "https://www.soundpill.cn/posts/2019-02-26-redis%E4%B8%AD%E7%9A%84sds%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "redis中的SDS数据结构",
+  "name": "redis中的SDS数据结构",
+  "description": "SDS(Simple Dynamic String)简单动态字符串 在Redis中可修改的字符串值都是采用的SDS数据结构, 而不可修改的都采用了C字符串\nSDS的结构 有三个基本变量\n free 纪录buf数组中未使用字节的数量 len 纪录buf数组中已使用字节的数量, 等于SDS所保存字符串的长度 buf 字节数组, 用于保存字符串(二进制)  为什么采用SDS SDS是基于C字符串结构的缺点优化后的产物, 因为采用C字符串的方式会有以下一些问题：\n 获取字符串长度需要遍历字符串获取, 将需要O(N)的时间复杂度 C字符串会有缓冲区溢出的问题 一旦修改字符串操作发生就会重新分配内存, 修改N次就分配N次 所以, 基于以上问题SDS结构的优点也显而易见了, 如下: 因为结构体中标记了字符串长度, 所以获取长度的时间复杂度变成了O(1) SDS的API中对内存分配的机制杜绝了缓冲区溢出的问题 同样, API中的操作也减少了修改字符串长度时所需的内存重分配次数 二进制安全 兼容部分C字符串函数  内存分配机制  空间预分配 在字符串增长操作中有两种情况来预分配空间 第一种是修改后的长度(len的值)小于1MB的情况下, free的值会和len的值相同, 来做到减少内存分配次数, 预分配以后可能会使用到的空间 第二种是修改后的长度大于1MB的情况下, free的值会多修改为1MB, 也就是在原来基础上多出1MB的未使用空间 惰性空间释放 在字符串缩短操作的时候, 不会将释放的空间马上回收, 而是会写入到free中, 将缩短的长度标记为未使用空间为将来可能会使用的字符串预留位置。SDS中也有相应的API, 可以在需要时真正释放这部分空间。  ",
+  "keywords": [
+    
+  ],
+  "articleBody": "SDS(Simple Dynamic String)简单动态字符串 在Redis中可修改的字符串值都是采用的SDS数据结构, 而不可修改的都采用了C字符串\nSDS的结构 有三个基本变量\n free 纪录buf数组中未使用字节的数量 len 纪录buf数组中已使用字节的数量, 等于SDS所保存字符串的长度 buf 字节数组, 用于保存字符串(二进制)  为什么采用SDS SDS是基于C字符串结构的缺点优化后的产物, 因为采用C字符串的方式会有以下一些问题：\n 获取字符串长度需要遍历字符串获取, 将需要O(N)的时间复杂度 C字符串会有缓冲区溢出的问题 一旦修改字符串操作发生就会重新分配内存, 修改N次就分配N次 所以, 基于以上问题SDS结构的优点也显而易见了, 如下: 因为结构体中标记了字符串长度, 所以获取长度的时间复杂度变成了O(1) SDS的API中对内存分配的机制杜绝了缓冲区溢出的问题 同样, API中的操作也减少了修改字符串长度时所需的内存重分配次数 二进制安全 兼容部分C字符串函数  内存分配机制  空间预分配 在字符串增长操作中有两种情况来预分配空间 第一种是修改后的长度(len的值)小于1MB的情况下, free的值会和len的值相同, 来做到减少内存分配次数, 预分配以后可能会使用到的空间 第二种是修改后的长度大于1MB的情况下, free的值会多修改为1MB, 也就是在原来基础上多出1MB的未使用空间 惰性空间释放 在字符串缩短操作的时候, 不会将释放的空间马上回收, 而是会写入到free中, 将缩短的长度标记为未使用空间为将来可能会使用的字符串预留位置。SDS中也有相应的API, 可以在需要时真正释放这部分空间。  ",
+  "wordCount" : "49",
+  "inLanguage": "en",
+  "datePublished": "2019-02-26T15:31:32+08:00",
+  "dateModified": "2019-02-26T15:31:32+08:00",
+  "author":{
+    "@type": "Person",
+    "name": "max"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://www.soundpill.cn/posts/2019-02-26-redis%E4%B8%AD%E7%9A%84sds%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Beoning",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.soundpill.cn/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://www.soundpill.cn" accesskey="h" title="Beoning (Alt + H)">Beoning</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      redis中的SDS数据结构
+    </h1>
+    <div class="post-meta"><span title='2019-02-26 15:31:32 +0800 CST'>February 26, 2019</span>&nbsp;·&nbsp;max
+
+</div>
+  </header> 
+  <div class="post-content"><h2 id="sdssimple-dynamic-string简单动态字符串">SDS(Simple Dynamic String)简单动态字符串<a hidden class="anchor" aria-hidden="true" href="#sdssimple-dynamic-string简单动态字符串">#</a></h2>
+<p>在Redis中可修改的字符串值都是采用的SDS数据结构, 而不可修改的都采用了C字符串</p>
+<h2 id="sds的结构">SDS的结构<a hidden class="anchor" aria-hidden="true" href="#sds的结构">#</a></h2>
+<p>有三个基本变量</p>
+<ul>
+<li>free 纪录buf数组中未使用字节的数量</li>
+<li>len 纪录buf数组中已使用字节的数量, 等于SDS所保存字符串的长度</li>
+<li>buf 字节数组, 用于保存字符串(二进制)</li>
+</ul>
+<h2 id="为什么采用sds">为什么采用SDS<a hidden class="anchor" aria-hidden="true" href="#为什么采用sds">#</a></h2>
+<p>SDS是基于C字符串结构的缺点优化后的产物, 因为采用C字符串的方式会有以下一些问题：</p>
+<ul>
+<li>获取字符串长度需要遍历字符串获取, 将需要O(N)的时间复杂度</li>
+<li>C字符串会有缓冲区溢出的问题</li>
+<li>一旦修改字符串操作发生就会重新分配内存, 修改N次就分配N次
+所以, 基于以上问题SDS结构的优点也显而易见了, 如下:</li>
+<li>因为结构体中标记了字符串长度, 所以获取长度的时间复杂度变成了O(1)</li>
+<li>SDS的API中对内存分配的机制杜绝了缓冲区溢出的问题</li>
+<li>同样, API中的操作也减少了修改字符串长度时所需的内存重分配次数</li>
+<li>二进制安全</li>
+<li>兼容部分C字符串函数</li>
+</ul>
+<h2 id="内存分配机制">内存分配机制<a hidden class="anchor" aria-hidden="true" href="#内存分配机制">#</a></h2>
+<ul>
+<li>空间预分配
+在字符串增长操作中有两种情况来预分配空间
+第一种是修改后的长度(len的值)小于1MB的情况下, free的值会和len的值相同, 来做到减少内存分配次数, 预分配以后可能会使用到的空间
+第二种是修改后的长度大于1MB的情况下, free的值会多修改为1MB, 也就是在原来基础上多出1MB的未使用空间</li>
+<li>惰性空间释放
+在字符串缩短操作的时候, 不会将释放的空间马上回收, 而是会写入到free中, 将缩短的长度标记为未使用空间为将来可能会使用的字符串预留位置。SDS中也有相应的API, 可以在需要时真正释放这部分空间。</li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://www.soundpill.cn">Beoning</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

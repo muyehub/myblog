@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>php-tips | Beoning</title>
+<meta name="keywords" content="" />
+<meta name="description" content="在 foreach 中不要使用 array_merge，不仅慢而且耗费内存，可以在 foreach 中对要合并的数组进行赋值，在 foreach 外部统一进行合并，具体性能差异可以参考这篇文章：不要在循环体中使用 array_merge()
+  在 foreach 中也不要使用 array_push，可以通过向数组中赋值的方式代替，比如：$students[] = $student[&lsquo;id&rsquo;]， 而不是 array_push($students, $student[&lsquo;id&rsquo;])，具体性能差异可以参考这篇文章：不要在循环体中使用 array_push()
+  针对一些查询较为复杂或者比较核心的逻辑里的 sql 查询，可以将 sql 语句写到注释中，这样看代码的时候不用再去拼接 sql，直接用注释中的 sql 拿来排查问题
+  如果使用 phpstorm 可以安装 php inspections 插件来进行代码的静态分析，可以帮助查找代码规范，语法漏洞，函数使用方式方面的错误。其他的一些代码质量工具可以配置使用 phpcs，phpmd，phpcs-fixer，psalm，phpstan 等。而且可以通过 phpstorm 的热键录制功能，将徽标键 &#43; s 设置为 phpcs-fixer，format code 的快捷键，这样写完时可以通过快捷键格式化代码。
+  为避免在项目中将 dd，var_dump，exit，die 等函数提交到远程版本库中，可以在项目的 .git/hooks/pre-commit 中进行控制，加入下面的代码，每次提交时可以检测到。参考的这个：pre-commit
+  VAR=$(git diff --cached --diff-filter=ACMR | grep -wiE &#34;var_dump|echo|exit|dd|die|console.log&#34;) if [ !">
+<meta name="author" content="max">
+<link rel="canonical" href="https://www.soundpill.cn/posts/2021-08-16-php-tips/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.c88963fe2d79462000fd0fb1b3737783c32855d340583e4523343f8735c787f0.css" integrity="sha256-yIlj/i15RiAA/Q&#43;xs3N3g8MoVdNAWD5FIzQ/hzXHh/A=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.7680afc38aa6b15ddf158a4f3780b7b1f7dde7e91d26f073e6229bb7a0793c92.js" integrity="sha256-doCvw4qmsV3fFYpPN4C3sffd5&#43;kdJvBz5iKbt6B5PJI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://www.soundpill.cn/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://www.soundpill.cn/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://www.soundpill.cn/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://www.soundpill.cn/apple-touch-icon.png">
+<link rel="mask-icon" href="https://www.soundpill.cn/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<meta name="generator" content="Hugo 0.92.0" />
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="php-tips" />
+<meta property="og:description" content="在 foreach 中不要使用 array_merge，不仅慢而且耗费内存，可以在 foreach 中对要合并的数组进行赋值，在 foreach 外部统一进行合并，具体性能差异可以参考这篇文章：不要在循环体中使用 array_merge()
+  在 foreach 中也不要使用 array_push，可以通过向数组中赋值的方式代替，比如：$students[] = $student[&lsquo;id&rsquo;]， 而不是 array_push($students, $student[&lsquo;id&rsquo;])，具体性能差异可以参考这篇文章：不要在循环体中使用 array_push()
+  针对一些查询较为复杂或者比较核心的逻辑里的 sql 查询，可以将 sql 语句写到注释中，这样看代码的时候不用再去拼接 sql，直接用注释中的 sql 拿来排查问题
+  如果使用 phpstorm 可以安装 php inspections 插件来进行代码的静态分析，可以帮助查找代码规范，语法漏洞，函数使用方式方面的错误。其他的一些代码质量工具可以配置使用 phpcs，phpmd，phpcs-fixer，psalm，phpstan 等。而且可以通过 phpstorm 的热键录制功能，将徽标键 &#43; s 设置为 phpcs-fixer，format code 的快捷键，这样写完时可以通过快捷键格式化代码。
+  为避免在项目中将 dd，var_dump，exit，die 等函数提交到远程版本库中，可以在项目的 .git/hooks/pre-commit 中进行控制，加入下面的代码，每次提交时可以检测到。参考的这个：pre-commit
+  VAR=$(git diff --cached --diff-filter=ACMR | grep -wiE &#34;var_dump|echo|exit|dd|die|console.log&#34;) if [ !" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.soundpill.cn/posts/2021-08-16-php-tips/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-08-16T19:03:01&#43;08:00" />
+<meta property="article:modified_time" content="2021-08-16T19:03:01&#43;08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="php-tips"/>
+<meta name="twitter:description" content="在 foreach 中不要使用 array_merge，不仅慢而且耗费内存，可以在 foreach 中对要合并的数组进行赋值，在 foreach 外部统一进行合并，具体性能差异可以参考这篇文章：不要在循环体中使用 array_merge()
+  在 foreach 中也不要使用 array_push，可以通过向数组中赋值的方式代替，比如：$students[] = $student[&lsquo;id&rsquo;]， 而不是 array_push($students, $student[&lsquo;id&rsquo;])，具体性能差异可以参考这篇文章：不要在循环体中使用 array_push()
+  针对一些查询较为复杂或者比较核心的逻辑里的 sql 查询，可以将 sql 语句写到注释中，这样看代码的时候不用再去拼接 sql，直接用注释中的 sql 拿来排查问题
+  如果使用 phpstorm 可以安装 php inspections 插件来进行代码的静态分析，可以帮助查找代码规范，语法漏洞，函数使用方式方面的错误。其他的一些代码质量工具可以配置使用 phpcs，phpmd，phpcs-fixer，psalm，phpstan 等。而且可以通过 phpstorm 的热键录制功能，将徽标键 &#43; s 设置为 phpcs-fixer，format code 的快捷键，这样写完时可以通过快捷键格式化代码。
+  为避免在项目中将 dd，var_dump，exit，die 等函数提交到远程版本库中，可以在项目的 .git/hooks/pre-commit 中进行控制，加入下面的代码，每次提交时可以检测到。参考的这个：pre-commit
+  VAR=$(git diff --cached --diff-filter=ACMR | grep -wiE &#34;var_dump|echo|exit|dd|die|console.log&#34;) if [ !"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://www.soundpill.cn/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "php-tips",
+      "item": "https://www.soundpill.cn/posts/2021-08-16-php-tips/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "php-tips",
+  "name": "php-tips",
+  "description": "在 foreach 中不要使用 array_merge，不仅慢而且耗费内存，可以在 foreach 中对要合并的数组进行赋值，在 foreach 外部统一进行合并，具体性能差异可以参考这篇文章：不要在循环体中使用 array_merge()\n  在 foreach 中也不要使用 array_push，可以通过向数组中赋值的方式代替，比如：$students[] = $student[\u0026lsquo;id\u0026rsquo;]， 而不是 array_push($students, $student[\u0026lsquo;id\u0026rsquo;])，具体性能差异可以参考这篇文章：不要在循环体中使用 array_push()\n  针对一些查询较为复杂或者比较核心的逻辑里的 sql 查询，可以将 sql 语句写到注释中，这样看代码的时候不用再去拼接 sql，直接用注释中的 sql 拿来排查问题\n  如果使用 phpstorm 可以安装 php inspections 插件来进行代码的静态分析，可以帮助查找代码规范，语法漏洞，函数使用方式方面的错误。其他的一些代码质量工具可以配置使用 phpcs，phpmd，phpcs-fixer，psalm，phpstan 等。而且可以通过 phpstorm 的热键录制功能，将徽标键 + s 设置为 phpcs-fixer，format code 的快捷键，这样写完时可以通过快捷键格式化代码。\n  为避免在项目中将 dd，var_dump，exit，die 等函数提交到远程版本库中，可以在项目的 .git/hooks/pre-commit 中进行控制，加入下面的代码，每次提交时可以检测到。参考的这个：pre-commit\n  VAR=$(git diff --cached --diff-filter=ACMR | grep -wiE \u0026#34;var_dump|echo|exit|dd|die|console.log\u0026#34;) if [ !",
+  "keywords": [
+    
+  ],
+  "articleBody": "  在 foreach 中不要使用 array_merge，不仅慢而且耗费内存，可以在 foreach 中对要合并的数组进行赋值，在 foreach 外部统一进行合并，具体性能差异可以参考这篇文章：不要在循环体中使用 array_merge()\n  在 foreach 中也不要使用 array_push，可以通过向数组中赋值的方式代替，比如：$students[] = $student[‘id’]， 而不是 array_push($students, $student[‘id’])，具体性能差异可以参考这篇文章：不要在循环体中使用 array_push()\n  针对一些查询较为复杂或者比较核心的逻辑里的 sql 查询，可以将 sql 语句写到注释中，这样看代码的时候不用再去拼接 sql，直接用注释中的 sql 拿来排查问题\n  如果使用 phpstorm 可以安装 php inspections 插件来进行代码的静态分析，可以帮助查找代码规范，语法漏洞，函数使用方式方面的错误。其他的一些代码质量工具可以配置使用 phpcs，phpmd，phpcs-fixer，psalm，phpstan 等。而且可以通过 phpstorm 的热键录制功能，将徽标键 + s 设置为 phpcs-fixer，format code 的快捷键，这样写完时可以通过快捷键格式化代码。\n  为避免在项目中将 dd，var_dump，exit，die 等函数提交到远程版本库中，可以在项目的 .git/hooks/pre-commit 中进行控制，加入下面的代码，每次提交时可以检测到。参考的这个：pre-commit\n  VAR=$(git diff --cached --diff-filter=ACMR | grep -wiE \"var_dump|echo|exit|dd|die|console.log\") if [ ! -z \"\\$VAR\" ]; then echo \"You've left a dd, var_dump, exit, die or console.log in one of your files! You don't really want to commit this so aborting now...\" exit 1 fi   在 for 循环的条件中不要使用函数，例如使用 count 来计算总数，这样每次循环都会执行一遍，不太好\n  使用三元运算符时如果要做强制类型转换请记得要在运算区域加括号避免报错，例如：(string)$studentId ?? “\"，这样的写法会产生歧义，如果同为字符串不会报错，如果是这样：(string)$studentId ?? null，那么就会报错。建议写成 (string)($studentId ?? null)\n  如果要做判断时要确定好运算符的优先级从而确保执行顺序，以免与预期相左，例如：\n  if ($isNew \u0026\u0026 $student = Stu::find($id) \u0026\u0026 isset($foo-con)) { ... } 因为逻辑运算符 \u0026\u0026 的运算优先级大于赋值运算符 =，所以上面这段代码可能会产生与预期不符的结果，这种情况下为保证执行顺序，尽量使用括号括起来。\n包括下面这种：\nif (!isset($student['birthday'])  time()) { ... } 虽然逻辑运算符 ！的优先级大于比较运算符 ，但手册中依然建议使用括号来明确运算顺序来增加代码可读性，手册中是这么说的：\n“括号的使用，哪怕在不是必要的场合下，通过括号的配对来明确标明运算顺序，而非靠运算符优先级和结合性来决定，通常能够增加代码的可读性。”\n",
+  "wordCount" : "132",
+  "inLanguage": "en",
+  "datePublished": "2021-08-16T19:03:01+08:00",
+  "dateModified": "2021-08-16T19:03:01+08:00",
+  "author":{
+    "@type": "Person",
+    "name": "max"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://www.soundpill.cn/posts/2021-08-16-php-tips/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Beoning",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.soundpill.cn/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://www.soundpill.cn" accesskey="h" title="Beoning (Alt + H)">Beoning</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      php-tips
+    </h1>
+    <div class="post-meta"><span title='2021-08-16 19:03:01 +0800 CST'>August 16, 2021</span>&nbsp;·&nbsp;max
+
+</div>
+  </header> 
+  <div class="post-content"><ul>
+<li>
+<p>在 foreach 中不要使用 array_merge，不仅慢而且耗费内存，可以在 foreach 中对要合并的数组进行赋值，在 foreach 外部统一进行合并，具体性能差异可以参考这篇文章：<a href="https://learnku.com/articles/25111">不要在循环体中使用 array_merge()</a></p>
+</li>
+<li>
+<p>在 foreach 中也不要使用 array_push，可以通过向数组中赋值的方式代替，比如：$students[] = $student[&lsquo;id&rsquo;]， 而不是 array_push($students, $student[&lsquo;id&rsquo;])，具体性能差异可以参考这篇文章：<a href="https://learnku.com/articles/25110">不要在循环体中使用 array_push()</a></p>
+</li>
+<li>
+<p>针对一些查询较为复杂或者比较核心的逻辑里的 sql 查询，可以将 sql 语句写到注释中，这样看代码的时候不用再去拼接 sql，直接用注释中的 sql 拿来排查问题</p>
+</li>
+<li>
+<p>如果使用 phpstorm 可以安装 php inspections 插件来进行代码的静态分析，可以帮助查找代码规范，语法漏洞，函数使用方式方面的错误。其他的一些代码质量工具可以配置使用 phpcs，phpmd，phpcs-fixer，psalm，phpstan 等。而且可以通过 phpstorm 的热键录制功能，将徽标键 + s 设置为 phpcs-fixer，format code 的快捷键，这样写完时可以通过快捷键格式化代码。</p>
+</li>
+<li>
+<p>为避免在项目中将 dd，var_dump，exit，die 等函数提交到远程版本库中，可以在项目的 .git/hooks/pre-commit 中进行控制，加入下面的代码，每次提交时可以检测到。参考的这个：<a href="https://gist.github.com/victorb/8334601">pre-commit</a></p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">VAR<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>git diff --cached --diff-filter<span style="color:#f92672">=</span>ACMR | grep -wiE <span style="color:#e6db74">&#34;var_dump|echo|exit|dd|die|console.log&#34;</span><span style="color:#66d9ef">)</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> ! -z <span style="color:#e6db74">&#34;\$VAR&#34;</span>  <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>  echo <span style="color:#e6db74">&#34;You&#39;ve left a dd, var_dump, exit, die or console.log in one of your files! You don&#39;t really want to commit this so aborting now...&#34;</span> exit <span style="color:#ae81ff">1</span> <span style="color:#66d9ef">fi</span>
+</code></pre></div><ul>
+<li>
+<p>在 for 循环的条件中不要使用函数，例如使用 count 来计算总数，这样每次循环都会执行一遍，不太好</p>
+</li>
+<li>
+<p>使用三元运算符时如果要做强制类型转换请记得要在运算区域加括号避免报错，例如：(string)$studentId ?? &ldquo;&quot;，这样的写法会产生歧义，如果同为字符串不会报错，如果是这样：(string)$studentId ?? null，那么就会报错。建议写成 (string)($studentId ?? null)</p>
+</li>
+<li>
+<p>如果要做判断时要确定好运算符的优先级从而确保执行顺序，以免与预期相左，例如：</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-php" data-lang="php"><span style="color:#66d9ef">if</span> ($isNew <span style="color:#f92672">&amp;&amp;</span> $student <span style="color:#f92672">=</span> <span style="color:#a6e22e">Stu</span><span style="color:#f92672">::</span><span style="color:#a6e22e">find</span>($id) <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">isset</span>($foo<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">con</span>)) {  <span style="color:#f92672">...</span> }
+</code></pre></div><p>因为逻辑运算符 &amp;&amp; 的运算优先级大于赋值运算符 =，所以上面这段代码可能会产生与预期不符的结果，这种情况下为保证执行顺序，尽量使用括号括起来。</p>
+<p>包括下面这种：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-php" data-lang="php"><span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">isset</span>($student[<span style="color:#e6db74">&#39;birthday&#39;</span>]) <span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">time</span>()) {  <span style="color:#f92672">...</span> }
+</code></pre></div><p>虽然逻辑运算符 ！的优先级大于比较运算符 &gt;，但手册中依然建议使用括号来明确运算顺序来增加代码可读性，手册中是这么说的：</p>
+<p>“括号的使用，哪怕在不是必要的场合下，通过括号的配对来明确标明运算顺序，而非靠运算符优先级和结合性来决定，通常能够增加代码的可读性。”</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://www.soundpill.cn">Beoning</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

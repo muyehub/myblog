@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Beoning</title>
+
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="canonical" href="https://www.soundpill.cn/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.c88963fe2d79462000fd0fb1b3737783c32855d340583e4523343f8735c787f0.css" integrity="sha256-yIlj/i15RiAA/Q&#43;xs3N3g8MoVdNAWD5FIzQ/hzXHh/A=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://www.soundpill.cn/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://www.soundpill.cn/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://www.soundpill.cn/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://www.soundpill.cn/apple-touch-icon.png">
+<link rel="mask-icon" href="https://www.soundpill.cn/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<meta name="generator" content="Hugo 0.92.0" />
+<link rel="alternate" type="application/rss+xml" href="https://www.soundpill.cn/index.xml">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="Beoning" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://www.soundpill.cn/" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Beoning"/>
+<meta name="twitter:description" content=""/>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Beoning",
+  "url": "https://www.soundpill.cn",
+  "description": "",
+  "thumbnailUrl": "https://www.soundpill.cn/favicon.ico",
+  "sameAs": [
+      
+  ]
+}
+</script>
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://www.soundpill.cn" accesskey="h" title="Beoning (Alt + H)">Beoning</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>Homestead完整的切换php版本
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>相信大多数人搜到的都是这篇文章 https://learnku.com/articles/16881
+文章中说, 使用 homestead 自带的工具 update-alternatives 进行切换就可以了, 但是我在使用后 php 的版本是切换了, 但是 pecl 安装扩展的时候安装的还是20170817目录, 这是 php7.2 的扩展包默认目录, 使用 php-config 看的时候也是 php7.2
+如何把phpize, pecl, php-config 都切换为 php7.1 呢? 请看下面
+sudo update-alternatives --set php /usr/bin/php7.1 sudo update-alternatives --set phar /usr/bin/phar7.1 sudo update-alternatives --set phar.phar /usr/bin/phar.phar7.1 sudo update-alternatives --set phpize /usr/bin/phpize7.1 sudo update-alternatives --set php-config /usr/bin/php-config7.1 如果你在切换之前装了错误的扩展包到其他版本的目录下, 这样切换完之后卸载重新装, 就 ok 了</p>
+  </section>
+  <footer class="entry-footer"><span title='2020-01-10 15:14:46 +0800 CST'>January 10, 2020</span>&nbsp;·&nbsp;max</footer>
+  <a class="entry-link" aria-label="post link to Homestead完整的切换php版本" href="https://www.soundpill.cn/posts/2020-01-10-homestead-version-switch/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>mojave下使用pyenv安装python3出错的问题
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>使用pyenv安装python3时出现如下报错 按照提示来看,好像是在提示我没有安装zlib库,但是我已经装了,没办法,google一下吧. (如果你因为没有安装zlib库而产生这个问题, 那就好办了, 直接brew install zlib)
+google搜索到的解决方案大都是要安装xcode命令行工具 xcode-select --install 这个我也安装了, 不安装的话啥也干不了啊
+最后解决方案 查看一下xcode-select -v的版本 这个版本的xcode-select 在默认情况下不包含Mojave SDK的头文件的,需要手动安装,mojave采用了新的SDK,关于新SDK的解释,官方的文档在这里 https://developer.apple.com/macos/whats-new/
+接下来,我手动安装了新的SDK头文件,解决完毕
+sudo installer -pkg /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg -target / </p>
+  </section>
+  <footer class="entry-footer"><span title='2019-02-26 15:33:39 +0800 CST'>February 26, 2019</span>&nbsp;·&nbsp;max</footer>
+  <a class="entry-link" aria-label="post link to mojave下使用pyenv安装python3出错的问题" href="https://www.soundpill.cn/posts/2019-02-26-mojave%E4%B8%8B%E4%BD%BF%E7%94%A8pyenv%E5%AE%89%E8%A3%85python3%E5%87%BA%E9%94%99%E7%9A%84%E9%97%AE%E9%A2%98/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>redis中的SDS数据结构
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>SDS(Simple Dynamic String)简单动态字符串 在Redis中可修改的字符串值都是采用的SDS数据结构, 而不可修改的都采用了C字符串
+SDS的结构 有三个基本变量
+ free 纪录buf数组中未使用字节的数量 len 纪录buf数组中已使用字节的数量, 等于SDS所保存字符串的长度 buf 字节数组, 用于保存字符串(二进制)  为什么采用SDS SDS是基于C字符串结构的缺点优化后的产物, 因为采用C字符串的方式会有以下一些问题：
+ 获取字符串长度需要遍历字符串获取, 将需要O(N)的时间复杂度 C字符串会有缓冲区溢出的问题 一旦修改字符串操作发生就会重新分配内存, 修改N次就分配N次 所以, 基于以上问题SDS结构的优点也显而易见了, 如下: 因为结构体中标记了字符串长度, 所以获取长度的时间复杂度变成了O(1) SDS的API中对内存分配的机制杜绝了缓冲区溢出的问题 同样, API中的操作也减少了修改字符串长度时所需的内存重分配次数 二进制安全 兼容部分C字符串函数  内存分配机制  空间预分配 在字符串增长操作中有两种情况来预分配空间 第一种是修改后的长度(len的值)小于1MB的情况下, free的值会和len的值相同, 来做到减少内存分配次数, 预分配以后可能会使用到的空间 第二种是修改后的长度大于1MB的情况下, free的值会多修改为1MB, 也就是在原来基础上多出1MB的未使用空间 惰性空间释放 在字符串缩短操作的时候, 不会将释放的空间马上回收, 而是会写入到free中, 将缩短的长度标记为未使用空间为将来可能会使用的字符串预留位置。SDS中也有相应的API, 可以在需要时真正释放这部分空间。  </p>
+  </section>
+  <footer class="entry-footer"><span title='2019-02-26 15:31:32 +0800 CST'>February 26, 2019</span>&nbsp;·&nbsp;max</footer>
+  <a class="entry-link" aria-label="post link to redis中的SDS数据结构" href="https://www.soundpill.cn/posts/2019-02-26-redis%E4%B8%AD%E7%9A%84sds%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>rebase和merge的区别
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>变基 找了一大圈, 还是官方的解释最好, 贴出来自己看吧, “变基&#34;这个名字起的很好, 文档中的&#34;重新播放&#34;的解释也相当生动
+https://git-scm.com/book/zh/v2/Git-分支-变基</p>
+  </section>
+  <footer class="entry-footer"><span title='2019-02-24 15:36:37 +0800 CST'>February 24, 2019</span>&nbsp;·&nbsp;max</footer>
+  <a class="entry-link" aria-label="post link to rebase和merge的区别" href="https://www.soundpill.cn/posts/2019-02-24-rebase%E5%92%8Cmerge%E7%9A%84%E5%8C%BA%E5%88%AB/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>cgi, fastcgi, php-cgi, php-fpm的关系
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>cgi 通用网关接口, Common Gateway Interface, CGI是Web服务器运行时外部程序的规范, 按CGI编写的程序可以扩展服务器功能. 所以, 广义上的cgi是一种接口标准, 不是字面意义上的接口. 狭义上, cgi就是cgi程序, 运行在服务器上, 提供同客户端HTML页面的接口. 绝大多数的cgi程序被用来解释处理来自表单的输入信息, 并在服务器产生相应的处理, 或将相应的信息反馈给浏览器, cgi程序使网页具有交互功能. cgi程序处理步骤:
+ 通过Internet把用户请求送到web服务器. web服务器接受用户请求并交给CGI程序处理. CGI程序把处理结果传送给web服务器. web服务器把结果送回到用户.  fastcgi 快速通用网关接口, Fast Common Gateway Interface, CGI有很多缺点, 每接收一个请求就要fork一个进程处理, 只能接收一个请求作出一个响应, 请求结束后该进程就会结束. 而fastcgi会事先启动起来, 作为一个cgi的管理服务器存在, 使用进程/线程池来处理一连串的请求. fastcgi程序处理步骤:
+ web服务器启动时载入fastcgi进程管理器 fastcgi自身初始化, 启动多个cgi解释器进程并等待来自web server的请求 当请求来到web服务器时, web服务器通过socket请求fastcgi进程管理器, fastcgi进程管理器选择并连接到一个cgi解释器, web服务器将cgi环境变量和标准输入发送到fastcgi子进程 fastcgi子进程处理请求完成后将标准输出和错误从同一连接返回给web服务器, 当fastcgi子进程结束后请求便结束.fastcgi子进程接着等待处理来自fastcgi进程管理器的下一个连接.  php-cgi php实现的cgi程序
+php-fpm php实现的fastcgi程序</p>
+  </section>
+  <footer class="entry-footer"><span title='2019-02-21 15:33:39 +0800 CST'>February 21, 2019</span>&nbsp;·&nbsp;max</footer>
+  <a class="entry-link" aria-label="post link to cgi, fastcgi, php-cgi, php-fpm的关系" href="https://www.soundpill.cn/posts/2019-02-21-cgi-fastcgi-php-cgi-php-fpm/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>推荐两个实用好玩的网站
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>在线绘图工具 有流程图，有类图，应有尽有，样式还很好看 https://www.draw.io/
+AI在线抠图工具 不说了，自己看吧 https://www.gaoding.com/koutu</p>
+  </section>
+  <footer class="entry-footer"><span title='2019-02-21 10:23:37 +0800 CST'>February 21, 2019</span>&nbsp;·&nbsp;max</footer>
+  <a class="entry-link" aria-label="post link to 推荐两个实用好玩的网站" href="https://www.soundpill.cn/posts/2019-02-21-%E6%8E%A8%E8%8D%90%E4%B8%A4%E4%B8%AA%E5%AE%9E%E7%94%A8%E5%A5%BD%E7%8E%A9%E7%9A%84%E7%BD%91%E7%AB%99/"></a>
+</article>
+<footer class="page-footer">
+  <nav class="pagination">
+    <a class="prev" href="https://www.soundpill.cn/">« Prev Page</a>
+  </nav>
+</footer>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://www.soundpill.cn">Beoning</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>
