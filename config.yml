@@ -1,7 +1,8 @@
 baseURL: "https://www.soundpill.cn/"
 title: "Beoning"
-paginate: 10
 theme: PaperMod
+pagination:
+  pagerSize: 10
 
 enableRobotsTXT: true
 buildDrafts: false
