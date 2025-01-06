@@ -1,4 +1,5 @@
 baseURL: "https://www.soundpill.cn/"
+developmentBaseURL: "http://localhost:1313"  # 开发环境
 title: "Beoning"
 theme: PaperMod
 pagination:
