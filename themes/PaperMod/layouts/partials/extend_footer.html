@@ -3,5 +3,6 @@ web-analytics, resources, etc. here */ -}} {{- /* Footer custom content area end
 */ -}}
 
 <script>
-  import { SpeedInsights } from "@vercel/speed-insights/next";
+  import { SpeedInsights } from "https://cdn.jsdelivr.net/npm/@vercel/speed-insights/next/index.js";
+  SpeedInsights();
 </script>
