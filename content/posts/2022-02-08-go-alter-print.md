@@ -1,7 +1,7 @@
 ---
 title: "控制 goroutine 执行顺序的一例"
 date: 2022-02-08T22:14:29+08:00
-draft: true
+draft: false
 ---
 
 ### 依次打印

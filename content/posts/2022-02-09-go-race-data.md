@@ -1,7 +1,7 @@
 ---
 title: "golang 中提防竞态条件的产生"
 date: 2022-02-09T22:33:25+08:00
-draft: true
+draft: false
 ---
 我们来看下面这段代码：
 ```Go
